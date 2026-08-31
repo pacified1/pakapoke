@@ -1,0 +1,2211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Pokémon Animal Index</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0b0e13;
+            --surface: #121720;
+            --surface-2: #181e29;
+            --surface-3: #202735;
+            --border: #293241;
+
+            --text: #f5f7fb;
+            --muted: #8e98aa;
+
+            --yellow: #ffcb05;
+            --yellow-dark: #b58b00;
+
+            --red: #ff4f6d;
+            --green: #52d273;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            background: rgba(11, 14, 19, 0.92);
+            backdrop-filter: blur(16px);
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-inner {
+            max-width: 1500px;
+            margin: auto;
+
+            min-height: 70px;
+            padding: 12px 20px;
+
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            flex-shrink: 0;
+        }
+
+        .brand-icon {
+            font-size: 34px;
+        }
+
+        .brand-title {
+            margin: 0;
+
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .brand-subtitle {
+            margin: 4px 0 0;
+
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .search-wrapper {
+            flex: 1;
+            max-width: 500px;
+            margin-left: auto;
+        }
+
+        #searchInput {
+            width: 100%;
+
+            border: 1px solid var(--border);
+            border-radius: 12px;
+
+            background: var(--surface);
+            color: var(--text);
+
+            padding: 11px 14px;
+            outline: none;
+        }
+
+        #searchInput:focus {
+            border-color: var(--yellow-dark);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .header-button {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+
+            background: var(--surface);
+            color: var(--text);
+
+            padding: 10px 13px;
+        }
+
+        .header-button:hover {
+            background: var(--surface-2);
+        }
+
+        .header-button.active {
+            background: var(--yellow);
+            border-color: var(--yellow);
+            color: #111;
+            font-weight: 800;
+        }
+
+        /* =====================================================
+           MAIN
+           ===================================================== */
+
+        main {
+            max-width: 1500px;
+            margin: auto;
+
+            padding: 24px 20px 80px;
+        }
+
+        /* =====================================================
+           STATS
+           ===================================================== */
+
+        .stats {
+            display: grid;
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+
+            padding: 16px;
+        }
+
+        .stat-number {
+            font-size: 25px;
+            font-weight: 900;
+        }
+
+        .stat-label {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* =====================================================
+           GROUPS
+           ===================================================== */
+
+        .animal-group {
+            margin-bottom: 42px;
+            scroll-margin-top: 95px;
+        }
+
+        .group-heading {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+
+            margin-bottom: 15px;
+        }
+
+        .group-icon {
+            width: 48px;
+            height: 48px;
+
+            display: grid;
+            place-items: center;
+
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+
+            font-size: 27px;
+        }
+
+        .group-title {
+            margin: 0;
+            font-size: 23px;
+        }
+
+        .group-description {
+            margin: 3px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* =====================================================
+           CATEGORY
+           ===================================================== */
+
+        .category {
+            margin: 0 0 25px;
+            scroll-margin-top: 95px;
+        }
+
+        .category-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 11px;
+        }
+
+        .category-title {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .category-count {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* =====================================================
+           POKÉMON GRID
+           ===================================================== */
+
+        .pokemon-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(155px, 1fr)
+                );
+
+            gap: 12px;
+        }
+
+        /* =====================================================
+           POKÉMON CARD
+           ===================================================== */
+
+        .pokemon-card {
+            position: relative;
+
+            overflow: hidden;
+
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+
+            transition:
+                transform .16s ease,
+                border-color .16s ease,
+                box-shadow .16s ease;
+        }
+
+        .pokemon-card:hover {
+            transform: translateY(-3px);
+
+            border-color: #455166;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, .22);
+        }
+
+        .pokemon-image-area {
+            height: 160px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #283140 0%,
+                    #151a23 70%
+                );
+        }
+
+        .pokemon-image {
+            width: 140px;
+            height: 140px;
+
+            object-fit: contain;
+
+            transition:
+                transform .18s ease;
+        }
+
+        .pokemon-card:hover .pokemon-image {
+            transform: scale(1.05);
+        }
+
+        .pokemon-placeholder {
+            color: var(--muted);
+            font-size: 34px;
+        }
+
+        .pokemon-content {
+            padding: 11px 12px 13px;
+        }
+
+        .pokemon-number {
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .pokemon-name {
+            margin-top: 3px;
+
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .pokemon-types {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .type-pill {
+            padding: 3px 7px;
+
+            border-radius: 999px;
+
+            background: var(--surface-3);
+            color: #c9d0dc;
+
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* =====================================================
+           FAVORITE
+           ===================================================== */
+
+        .favorite-button {
+            position: absolute;
+            top: 9px;
+            right: 9px;
+
+            width: 35px;
+            height: 35px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid var(--border);
+            border-radius: 50%;
+
+            background: rgba(11, 14, 19, .82);
+            color: white;
+
+            font-size: 19px;
+            line-height: 1;
+
+            z-index: 5;
+        }
+
+        .favorite-button:hover {
+            border-color: var(--red);
+        }
+
+        .favorite-button.favorite {
+            color: var(--red);
+            border-color: var(--red);
+        }
+
+        /* =====================================================
+           FAVORITES
+           ===================================================== */
+
+        #favoritesView {
+            display: none;
+        }
+
+        .favorites-header {
+            margin-bottom: 25px;
+        }
+
+        .favorites-header h2 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .favorites-header p {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .favorite-categories {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 12px;
+
+            margin-bottom: 30px;
+        }
+
+        .favorite-category-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+
+            padding: 15px;
+
+            transition:
+                border-color .15s ease,
+                transform .15s ease;
+        }
+
+        .favorite-category-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--yellow-dark);
+        }
+
+        .favorite-category-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 10px;
+        }
+
+        .favorite-category-name {
+            font-weight: 800;
+        }
+
+        .favorite-category-percent {
+            color: var(--yellow);
+            font-weight: 900;
+        }
+
+        .progress-track {
+            height: 7px;
+
+            overflow: hidden;
+
+            background: #282f3b;
+            border-radius: 999px;
+        }
+
+        .progress-fill {
+            height: 100%;
+
+            background: var(--yellow);
+            border-radius: inherit;
+
+            transition: width .3s ease;
+        }
+
+        .favorite-category-meta {
+            margin-top: 8px;
+
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        /* =====================================================
+           EMPTY
+           ===================================================== */
+
+        .empty {
+            padding: 70px 20px;
+
+            text-align: center;
+
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            margin-bottom: 12px;
+            font-size: 48px;
+        }
+
+        .empty-title {
+            color: var(--text);
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .empty-text {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        /* =====================================================
+           LOADING
+           ===================================================== */
+
+        .loading {
+            padding: 50px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+
+            margin: 0 auto 12px;
+
+            border: 3px solid var(--surface-3);
+            border-top-color: var(--yellow);
+
+            border-radius: 50%;
+
+            animation: spin .8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =====================================================
+           TOAST
+           ===================================================== */
+
+        #toast {
+            position: fixed;
+
+            left: 50%;
+            bottom: 24px;
+
+            transform:
+                translate(-50%, 20px);
+
+            opacity: 0;
+            pointer-events: none;
+
+            background: var(--surface-3);
+            border: 1px solid var(--border);
+
+            padding: 10px 15px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            transition:
+                opacity .2s ease,
+                transform .2s ease;
+
+            z-index: 2000;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .header-inner {
+                flex-wrap: wrap;
+            }
+
+            .search-wrapper {
+                order: 3;
+                flex-basis: 100%;
+                max-width: none;
+            }
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            main {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .header-inner {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .brand-title {
+                font-size: 17px;
+            }
+
+            .header-buttons {
+                width: 100%;
+            }
+
+            .header-button {
+                flex: 1;
+            }
+
+            .pokemon-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .pokemon-image-area {
+                height: 130px;
+            }
+
+            .pokemon-image {
+                width: 110px;
+                height: 110px;
+            }
+
+            .stats {
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 12px;
+            }
+
+            .stat-number {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="header-inner">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🐾
+            </div>
+
+            <div>
+                <h1 class="brand-title">
+                    Pokémon Animal Index
+                </h1>
+
+                <p class="brand-subtitle">
+                    Your Pokémon, organized by animal inspiration
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="search-wrapper">
+
+            <input
+                id="searchInput"
+                type="search"
+                placeholder="Search Pokémon..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="header-buttons">
+
+            <button
+                id="categoriesButton"
+                class="header-button active"
+                type="button"
+            >
+                Categories
+            </button>
+
+            <button
+                id="favoritesButton"
+                class="header-button"
+                type="button"
+            >
+                ❤️ Favorites
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <!-- =====================================================
+         STATS
+         ===================================================== -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+
+            <div
+                id="indexedCount"
+                class="stat-number"
+            >
+                0
+            </div>
+
+            <div class="stat-label">
+                Pokémon indexed
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div
+                id="favoriteCount"
+                class="stat-number"
+            >
+                0
+            </div>
+
+            <div class="stat-label">
+                Favorites
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div
+                id="favoritePercent"
+                class="stat-number"
+            >
+                0%
+            </div>
+
+            <div class="stat-label">
+                Collection favorited
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div
+                id="categoryCount"
+                class="stat-number"
+            >
+                0
+            </div>
+
+            <div class="stat-label">
+                Categories
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CATEGORY VIEW
+         ===================================================== -->
+
+    <section id="categoriesView">
+
+        <div
+            id="categoryLoading"
+            class="loading"
+        >
+
+            <div class="spinner"></div>
+
+            Loading Pokémon...
+
+        </div>
+
+        <div id="categoryContent"></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FAVORITES VIEW
+         ===================================================== -->
+
+    <section id="favoritesView">
+
+        <div class="favorites-header">
+
+            <h2>
+                ❤️ My Pokémon
+            </h2>
+
+            <p>
+                Your favorites and the animal categories
+                they belong to.
+            </p>
+
+        </div>
+
+
+        <div
+            id="favoriteCategories"
+            class="favorite-categories"
+        ></div>
+
+
+        <div
+            id="favoritePokemon"
+            class="pokemon-grid"
+        ></div>
+
+    </section>
+
+</main>
+
+
+<div id="toast"></div>
+
+
+<script type="module">
+
+/* =========================================================
+   YOUR DATA
+   =========================================================
+
+   Your file should be beside this index.html:
+
+       index.html
+       pokemon_by_category.js
+
+   And should contain:
+
+       export const pokemon_by_category = {
+           canine: {
+               fox: [
+                   "Zorua",
+                   "Zoroark"
+               ]
+           }
+       };
+
+   ========================================================= */
+
+import { pokemon_by_category } from "./pokemon_by_category.js";
+
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+const FAVORITES_KEY =
+    "pokemon-animal-index-favorites-v1";
+
+const API_URL =
+    "https://pokeapi.co/api/v2/pokemon/";
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+const pokemonCache =
+    new Map();
+
+let allEntries = [];
+
+let favorites =
+    new Set(
+        JSON.parse(
+            localStorage.getItem(FAVORITES_KEY)
+            || "[]"
+        )
+    );
+
+
+let currentSearch = "";
+
+
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const categoryContent =
+    document.getElementById(
+        "categoryContent"
+    );
+
+const categoryLoading =
+    document.getElementById(
+        "categoryLoading"
+    );
+
+const favoritesView =
+    document.getElementById(
+        "favoritesView"
+    );
+
+const categoriesView =
+    document.getElementById(
+        "categoriesView"
+    );
+
+const categoriesButton =
+    document.getElementById(
+        "categoriesButton"
+    );
+
+const favoritesButton =
+    document.getElementById(
+        "favoritesButton"
+    );
+
+const searchInput =
+    document.getElementById(
+        "searchInput"
+    );
+
+const favoriteCategories =
+    document.getElementById(
+        "favoriteCategories"
+    );
+
+const favoritePokemon =
+    document.getElementById(
+        "favoritePokemon"
+    );
+
+const indexedCount =
+    document.getElementById(
+        "indexedCount"
+    );
+
+const favoriteCount =
+    document.getElementById(
+        "favoriteCount"
+    );
+
+const favoritePercent =
+    document.getElementById(
+        "favoritePercent"
+    );
+
+const categoryCount =
+    document.getElementById(
+        "categoryCount"
+    );
+
+const toast =
+    document.getElementById(
+        "toast"
+    );
+
+
+/* =========================================================
+   ICONS
+   ========================================================= */
+
+const GROUP_ICONS = {
+
+    canine: "🐕",
+    feline: "🐈",
+    rodent: "🐭",
+    lagomorph: "🐰",
+    bear: "🐻",
+    primate: "🐒",
+    ungulate: "🦌",
+    marsupial: "🦘",
+    bat: "🦇",
+    mustelid: "🦦",
+    reptile: "🦎",
+    amphibian: "🐸",
+    bird: "🐦",
+    fish: "🐟",
+    marineMammal: "🐋",
+    cephalopod: "🐙",
+    insect: "🦋",
+    arachnid: "🕷️",
+    crustacean: "🦀",
+    mollusk: "🐚",
+    worm: "🪱",
+    cnidarian: "🪼",
+    prehistoric: "🦖",
+    otherMammal: "🦔",
+    animalLike: "🐾"
+
+};
+
+
+/* =========================================================
+   FORMATTERS
+   ========================================================= */
+
+function humanize(value) {
+
+    return String(value)
+        .replace(/([a-z])([A-Z])/g, "$1 $2")
+        .replace(/[-_]/g, " ")
+        .replace(/\b\w/g, char =>
+            char.toUpperCase()
+        );
+}
+
+
+function normalizeName(name) {
+
+    return String(name)
+        .trim()
+        .toLowerCase();
+
+}
+
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+/* =========================================================
+   FLATTEN YOUR CATEGORY FILE
+   ========================================================= */
+
+function buildEntries() {
+
+    const entries = [];
+
+    for (
+        const [groupKey, categories]
+        of Object.entries(
+            pokemon_by_category
+        )
+    ) {
+
+        for (
+            const [categoryKey, names]
+            of Object.entries(categories)
+        ) {
+
+            if (!Array.isArray(names)) {
+                continue;
+            }
+
+            for (const rawName of names) {
+
+                if (
+                    typeof rawName !== "string"
+                    || !rawName.trim()
+                ) {
+                    continue;
+                }
+
+                entries.push({
+
+                    name: rawName.trim(),
+
+                    normalizedName:
+                        normalizeName(rawName),
+
+                    groupKey,
+
+                    categoryKey
+
+                });
+
+            }
+
+        }
+
+    }
+
+    return entries;
+}
+
+
+/* =========================================================
+   REMOVE DUPLICATES FOR INDEXING
+   =========================================================
+
+   A Pokémon can be shown in multiple categories if your
+   data file puts it there.
+
+   For the overall "indexed" number, however, we count
+   unique Pokémon species.
+
+   ========================================================= */
+
+function getUniquePokemonNames() {
+
+    return [
+        ...new Set(
+            allEntries.map(
+                entry => entry.normalizedName
+            )
+        )
+    ];
+}
+
+
+/* =========================================================
+   POKÉAPI
+   ========================================================= */
+
+async function fetchPokemon(name) {
+
+    const key =
+        normalizeName(name);
+
+    if (pokemonCache.has(key)) {
+        return pokemonCache.get(key);
+    }
+
+    const response =
+        await fetch(
+            API_URL +
+            encodeURIComponent(key)
+        );
+
+    if (!response.ok) {
+        throw new Error(
+            `Pokémon not found: ${name}`
+        );
+    }
+
+    const data =
+        await response.json();
+
+    pokemonCache.set(key, data);
+
+    return data;
+}
+
+
+/* =========================================================
+   PRELOAD DATA
+   =========================================================
+
+   Fetches the Pokémon information needed for the cards.
+
+   A small concurrency limit prevents the browser from
+   firing hundreds of requests simultaneously.
+
+   ========================================================= */
+
+async function loadPokemonData() {
+
+    const unique =
+        [
+            ...new Map(
+                allEntries.map(
+                    entry => [
+                        entry.normalizedName,
+                        entry
+                    ]
+                )
+            ).values()
+        ];
+
+
+    const CONCURRENCY = 10;
+
+    let position = 0;
+
+
+    async function worker() {
+
+        while (
+            position < unique.length
+        ) {
+
+            const entry =
+                unique[position++];
+
+            try {
+
+                await fetchPokemon(
+                    entry.name
+                );
+
+            } catch (error) {
+
+                console.warn(
+                    error.message
+                );
+
+            }
+
+        }
+
+    }
+
+
+    await Promise.all(
+        Array.from(
+            {
+                length:
+                    Math.min(
+                        CONCURRENCY,
+                        unique.length
+                    )
+            },
+            worker
+        )
+    );
+}
+
+
+/* =========================================================
+   IMAGE
+   ========================================================= */
+
+function getArtwork(data) {
+
+    return (
+        data?.sprites
+            ?.other
+            ?.["official-artwork"]
+            ?.front_default
+
+        ||
+
+        data?.sprites
+            ?.front_default
+
+        ||
+
+        ""
+    );
+}
+
+
+/* =========================================================
+   TYPE PILL
+   ========================================================= */
+
+function createTypePills(data) {
+
+    if (!data?.types) {
+        return "";
+    }
+
+    return data.types
+        .map(type => `
+            <span class="type-pill">
+                ${escapeHTML(type.type.name)}
+            </span>
+        `)
+        .join("");
+}
+
+
+/* =========================================================
+   POKÉMON CARD
+   ========================================================= */
+
+function createPokemonCard(entry) {
+
+    const data =
+        pokemonCache.get(
+            entry.normalizedName
+        );
+
+
+    const isFavorite =
+        favorites.has(
+            entry.normalizedName
+        );
+
+
+    const card =
+        document.createElement("article");
+
+    card.className =
+        "pokemon-card";
+
+
+    const number =
+        data?.id
+            ? `#${String(data.id).padStart(4, "0")}`
+            : "";
+
+
+    const image =
+        getArtwork(data);
+
+
+    card.innerHTML = `
+
+        <button
+            class="
+                favorite-button
+                ${isFavorite ? "favorite" : ""}
+            "
+            type="button"
+            aria-label="
+                ${
+                    isFavorite
+                        ? "Remove from favorites"
+                        : "Add to favorites"
+                }
+            "
+        >
+            ${isFavorite ? "♥" : "♡"}
+        </button>
+
+
+        <div class="pokemon-image-area">
+
+            ${
+                image
+
+                    ? `
+                        <img
+                            class="pokemon-image"
+                            src="${image}"
+                            alt="${escapeHTML(entry.name)}"
+                            loading="lazy"
+                        >
+                    `
+
+                    : `
+                        <div class="pokemon-placeholder">
+                            ?
+                        </div>
+                    `
+            }
+
+        </div>
+
+
+        <div class="pokemon-content">
+
+            <div class="pokemon-number">
+                ${number}
+            </div>
+
+            <div class="pokemon-name">
+                ${escapeHTML(entry.name)}
+            </div>
+
+            <div class="pokemon-types">
+                ${createTypePills(data)}
+            </div>
+
+        </div>
+    `;
+
+
+    card
+        .querySelector(
+            ".favorite-button"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                toggleFavorite(
+                    entry.normalizedName
+                );
+
+            }
+        );
+
+
+    return card;
+}
+
+
+/* =========================================================
+   RENDER CATEGORIES
+   ========================================================= */
+
+function renderCategories() {
+
+    categoryContent.innerHTML = "";
+
+
+    const search =
+        currentSearch
+            .trim()
+            .toLowerCase();
+
+
+    for (
+        const [groupKey, categories]
+        of Object.entries(
+            pokemon_by_category
+        )
+    ) {
+
+        const groupEntries =
+            allEntries.filter(
+                entry =>
+                    entry.groupKey ===
+                    groupKey
+            );
+
+
+        const visibleGroupEntries =
+            groupEntries.filter(
+                entry =>
+                    !search
+                    ||
+                    entry.name
+                        .toLowerCase()
+                        .includes(search)
+            );
+
+
+        if (
+            !visibleGroupEntries.length
+        ) {
+            continue;
+        }
+
+
+        const group =
+            document.createElement("section");
+
+        group.className =
+            "animal-group";
+
+        group.id =
+            `group-${groupKey}`;
+
+
+        const icon =
+            GROUP_ICONS[groupKey]
+            || "🐾";
+
+
+        group.innerHTML = `
+
+            <div class="group-heading">
+
+                <div class="group-icon">
+                    ${icon}
+                </div>
+
+                <div>
+
+                    <h2 class="group-title">
+                        ${humanize(groupKey)}
+                    </h2>
+
+                    <p class="group-description">
+                        Animal-inspired Pokémon
+                    </p>
+
+                </div>
+
+            </div>
+        `;
+
+
+        for (
+            const [categoryKey, names]
+            of Object.entries(categories)
+        ) {
+
+            if (!Array.isArray(names)) {
+                continue;
+            }
+
+
+            const entries =
+                names
+                    .map(name =>
+                        allEntries.find(
+                            entry =>
+                                entry.groupKey ===
+                                    groupKey
+                                &&
+                                entry.categoryKey ===
+                                    categoryKey
+                                &&
+                                entry.normalizedName ===
+                                    normalizeName(name)
+                        )
+                    )
+                    .filter(Boolean)
+                    .filter(entry =>
+                        !search
+                        ||
+                        entry.name
+                            .toLowerCase()
+                            .includes(search)
+                    );
+
+
+            if (!entries.length) {
+                continue;
+            }
+
+
+            const category =
+                document.createElement("section");
+
+            category.className =
+                "category";
+
+            category.id =
+                categoryId(
+                    groupKey,
+                    categoryKey
+                );
+
+
+            category.innerHTML = `
+
+                <div class="category-heading">
+
+                    <div class="category-title">
+                        ${humanize(categoryKey)}
+                    </div>
+
+                    <div class="category-count">
+                        ${entries.length}
+                        Pokémon
+                    </div>
+
+                </div>
+            `;
+
+
+            const grid =
+                document.createElement("div");
+
+            grid.className =
+                "pokemon-grid";
+
+
+            for (const entry of entries) {
+
+                grid.appendChild(
+                    createPokemonCard(entry)
+                );
+
+            }
+
+
+            category.appendChild(grid);
+
+            group.appendChild(category);
+        }
+
+
+        categoryContent.appendChild(group);
+    }
+
+
+    if (
+        !categoryContent.children.length
+    ) {
+
+        categoryContent.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    🔎
+                </div>
+
+                <div class="empty-title">
+                    No Pokémon found
+                </div>
+
+                <div class="empty-text">
+                    Try a different search.
+                </div>
+
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   CATEGORY ID
+   ========================================================= */
+
+function categoryId(
+    groupKey,
+    categoryKey
+) {
+
+    return (
+        "category-" +
+        normalizeName(groupKey)
+            .replace(/[^a-z0-9]+/g, "-")
+        +
+        "-" +
+        normalizeName(categoryKey)
+            .replace(/[^a-z0-9]+/g, "-")
+    );
+}
+
+
+/* =========================================================
+   FAVORITES
+   ========================================================= */
+
+function saveFavorites() {
+
+    localStorage.setItem(
+        FAVORITES_KEY,
+        JSON.stringify(
+            [...favorites]
+        )
+    );
+}
+
+
+function toggleFavorite(name) {
+
+    if (favorites.has(name)) {
+
+        favorites.delete(name);
+
+        showToast(
+            "Removed from favorites"
+        );
+
+    } else {
+
+        favorites.add(name);
+
+        showToast(
+            "Added to favorites ❤️"
+        );
+
+    }
+
+
+    saveFavorites();
+
+    updateStats();
+
+    renderCategories();
+
+    renderFavorites();
+}
+
+
+/* =========================================================
+   FAVORITE CATEGORY BREAKDOWN
+   =========================================================
+
+   Percentages are calculated from the FAVORITED Pokémon.
+
+   Example:
+
+       30 favorites total
+       9 foxes
+
+       Fox = 30%
+
+   ========================================================= */
+
+function renderFavoriteCategories() {
+
+    favoriteCategories.innerHTML = "";
+
+
+    const favoriteEntries =
+        allEntries.filter(
+            entry =>
+                favorites.has(
+                    entry.normalizedName
+                )
+        );
+
+
+    if (!favoriteEntries.length) {
+        return;
+    }
+
+
+    const counts =
+        new Map();
+
+
+    for (
+        const entry of favoriteEntries
+    ) {
+
+        const key =
+            `${entry.groupKey}::${entry.categoryKey}`;
+
+
+        counts.set(
+            key,
+            (counts.get(key) || 0) + 1
+        );
+
+    }
+
+
+    const sorted =
+        [...counts.entries()]
+            .sort(
+                ([, a], [, b]) =>
+                    b - a
+            );
+
+
+    const total =
+        favoriteEntries.length;
+
+
+    for (
+        const [key, count]
+        of sorted
+    ) {
+
+        const [
+            groupKey,
+            categoryKey
+        ] = key.split("::");
+
+
+        const percentage =
+            (count / total) * 100;
+
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "favorite-category-card";
+
+        card.innerHTML = `
+
+            <div class="favorite-category-top">
+
+                <div class="favorite-category-name">
+                    ${humanize(categoryKey)}
+                </div>
+
+                <div class="favorite-category-percent">
+                    ${formatPercent(percentage)}
+                </div>
+
+            </div>
+
+
+            <div class="progress-track">
+
+                <div
+                    class="progress-fill"
+                    style="
+                        width:
+                        ${Math.min(percentage, 100)}%;
+                    "
+                ></div>
+
+            </div>
+
+
+            <div class="favorite-category-meta">
+
+                ${count}
+                favorite
+                ${count === 1 ? "Pokémon" : "Pokémon"}
+
+                ·
+
+                ${humanize(groupKey)}
+
+            </div>
+        `;
+
+
+        card.addEventListener(
+            "click",
+            () => {
+
+                showCategories();
+
+
+                setTimeout(() => {
+
+                    const target =
+                        document.getElementById(
+                            categoryId(
+                                groupKey,
+                                categoryKey
+                            )
+                        );
+
+
+                    if (target) {
+
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start"
+                        });
+
+                    }
+
+                }, 50);
+
+            }
+        );
+
+
+        favoriteCategories.appendChild(
+            card
+        );
+    }
+}
+
+
+/* =========================================================
+   FAVORITE POKÉMON
+   ========================================================= */
+
+function renderFavoritePokemon() {
+
+    favoritePokemon.innerHTML = "";
+
+
+    const entries =
+        allEntries.filter(
+            entry =>
+                favorites.has(
+                    entry.normalizedName
+                )
+        );
+
+
+    /*
+       Prevent the same Pokémon from appearing multiple
+       times if it exists in multiple categories.
+    */
+
+    const unique =
+        [
+            ...new Map(
+                entries.map(
+                    entry => [
+                        entry.normalizedName,
+                        entry
+                    ]
+                )
+            ).values()
+        ];
+
+
+    if (!unique.length) {
+
+        favoritePokemon.innerHTML = `
+
+            <div
+                class="empty"
+                style="grid-column:1/-1;"
+            >
+
+                <div class="empty-icon">
+                    ♡
+                </div>
+
+                <div class="empty-title">
+                    No favorites yet
+                </div>
+
+                <div class="empty-text">
+                    Tap the heart on a Pokémon to
+                    add it to your collection.
+                </div>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    for (const entry of unique) {
+
+        favoritePokemon.appendChild(
+            createPokemonCard(entry)
+        );
+
+    }
+}
+
+
+/* =========================================================
+   FAVORITES VIEW
+   ========================================================= */
+
+function renderFavorites() {
+
+    renderFavoriteCategories();
+
+    renderFavoritePokemon();
+}
+
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+function updateStats() {
+
+    const uniqueNames =
+        getUniquePokemonNames();
+
+
+    const total =
+        uniqueNames.length;
+
+
+    const favoriteUnique =
+        new Set(
+            [...favorites].filter(
+                name =>
+                    uniqueNames.includes(name)
+            )
+        );
+
+
+    indexedCount.textContent =
+        total.toLocaleString();
+
+
+    favoriteCount.textContent =
+        favoriteUnique.size.toLocaleString();
+
+
+    favoritePercent.textContent =
+        total
+            ? `${Math.round(
+                favoriteUnique.size /
+                total *
+                100
+            )}%`
+            : "0%";
+
+
+    const categories =
+        new Set(
+            allEntries.map(
+                entry =>
+                    `${entry.groupKey}::${entry.categoryKey}`
+            )
+        );
+
+
+    categoryCount.textContent =
+        categories.size.toLocaleString();
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+searchInput.addEventListener(
+    "input",
+    event => {
+
+        currentSearch =
+            event.target.value;
+
+        renderCategories();
+
+    }
+);
+
+
+/* =========================================================
+   VIEW SWITCHING
+   ========================================================= */
+
+function showCategories() {
+
+    categoriesView.style.display =
+        "block";
+
+    favoritesView.style.display =
+        "none";
+
+
+    categoriesButton.classList.add(
+        "active"
+    );
+
+    favoritesButton.classList.remove(
+        "active"
+    );
+
+}
+
+
+function showFavorites() {
+
+    categoriesView.style.display =
+        "none";
+
+    favoritesView.style.display =
+        "block";
+
+
+    categoriesButton.classList.remove(
+        "active"
+    );
+
+    favoritesButton.classList.add(
+        "active"
+    );
+
+
+    renderFavorites();
+
+}
+
+
+categoriesButton.addEventListener(
+    "click",
+    showCategories
+);
+
+
+favoritesButton.addEventListener(
+    "click",
+    showFavorites
+);
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+let toastTimer;
+
+
+function showToast(message) {
+
+    toast.textContent =
+        message;
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(toastTimer);
+
+
+    toastTimer =
+        setTimeout(
+            () => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            1600
+        );
+}
+
+
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
+
+async function initialize() {
+
+    try {
+
+        allEntries =
+            buildEntries();
+
+
+        updateStats();
+
+
+        await loadPokemonData();
+
+
+        categoryLoading.style.display =
+            "none";
+
+
+        renderCategories();
+
+        renderFavorites();
+
+        updateStats();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        categoryLoading.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    ⚠️
+                </div>
+
+                <div class="empty-title">
+                    Could not load your Pokémon data
+                </div>
+
+                <div class="empty-text">
+                    Make sure
+                    <strong>
+                        pokemon_by_category.js
+                    </strong>
+                    is beside this index.html and
+                    exports
+                    <strong>
+                        pokemon_by_category
+                    </strong>.
+                </div>
+
+            </div>
+        `;
+    }
+}
+
+
+initialize();
+
+</script>
+
+</body>
+</html>
